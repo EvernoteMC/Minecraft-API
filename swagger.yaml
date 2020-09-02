@@ -1,1 +1,819 @@
+openapi: 3.0.3
+info:
+  title: Obsidion Minecraft API
+  description: >-
+    This is the API developed by the
+    [Obsidion-dev](https://github.com/Obsidion-dev) team for use by the
+    minecraft community
+  version: 1.0.0
+  contact:
+    name: Developer
+    email: leon@bowie-co.nz
+  license:
+    name: GNU AGPL v3
+    url: 'https://www.gnu.org/licenses/agpl-3.0.html'
+servers:
+  - url: 'https://api.obsidion-dev.com/v1'
+    description: Development Server
+tags:
+  - name: server
+    description: Information about a minecraft server
+  - name: mojang
+    description: Information about mojang services
+  - name: images
+    description: image generation
+  - name: info
+    description: info about minecraft stuff
+  - name: render
+    description: render items/blocks
+  - name: servertracking
+    description: servertracking
+paths:
+  /servers/java:
+    get:
+      tags:
+        - server
+      description: returns info about a minecraft server
+      parameters:
+        - name: server
+          in: query
+          description: ip or hostname of the server
+          required: true
+          style: form
+          schema:
+            type: string
+        - name: port
+          in: query
+          description: port of the server
+          required: false
+          style: form
+          schema:
+            type: integer
+            format: int64
+            default: 25565
+      responses:
+        '200':
+          description: server info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  online:
+                    type: boolean
+                  ip:
+                    type: string
+                  port:
+                    type: integer
+                  debug:
+                    type: object
+                    properties:
+                      ping:
+                        type: boolean
+                      query:
+                        type: boolean
+                      srv:
+                        type: boolean
+                      querymismatch:
+                        type: boolean
+                      ipinsrv:
+                        type: boolean
+                      animatedmotd:
+                        type: boolean
+                      cnameinsrv:
+                        type: boolean
+                      cachetime:
+                        type: integer
+                  motd:
+                    type: object
+                    properties:
+                      raw:
+                        type: array
+                        items:
+                          type: string
+                      clean:
+                        type: array
+                        items:
+                          type: string
+                      html:
+                        type: array
+                        items:
+                          type: string
+                  players:
+                    type: object
+                    properties:
+                      online:
+                        type: integer
+                      max:
+                        type: integer
+                      sample:
+                        type: array
+                        items:
+                          type: array
+                          items:
+                            type: string
+                  version:
+                    type: string
+                  protocol:
+                    type: integer
+                  hostname:
+                    type: string
+                  icon:
+                    type: string
+  /server/javaicon:
+    get:
+      tags:
+        - server
+      description: generated motd for the server
+      parameters:
+        - name: server
+          in: query
+          description: ip or hostname of the server
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: int64
+        - name: port
+          in: query
+          description: port of the server
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: server info
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /servers/bedrock:
+    get:
+      tags:
+        - server
+      description: returns info about a minecraft server
+      parameters:
+        - name: server
+          in: query
+          description: ip or hostname of the server
+          required: true
+          style: form
+          schema:
+            type: string
+        - name: port
+          in: query
+          description: port of the server
+          required: false
+          style: form
+          schema:
+            type: integer
+            format: int64
+            default: 19132
+      responses:
+        '200':
+          description: server info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  online:
+                    type: boolean
+                  ip:
+                    type: string
+                  port:
+                    type: integer
+                  debug:
+                    type: object
+                    properties:
+                      ping:
+                        type: boolean
+                      query:
+                        type: boolean
+                      srv:
+                        type: boolean
+                      querymismatch:
+                        type: boolean
+                      ipinsrv:
+                        type: boolean
+                      cnameinsrv:
+                        type: boolean
+                      cachetime:
+                        type: integer
+                  motd:
+                    type: object
+                    properties:
+                      raw:
+                        type: array
+                        items:
+                          type: string
+                      clean:
+                        type: array
+                        items:
+                          type: string
+                      html:
+                        type: array
+                        items:
+                          type: string
+                  players:
+                    type: object
+                    properties:
+                      online:
+                        type: integer
+                      max:
+                        type: integer
+                      sample:
+                        type: array
+                        items:
+                          type: array
+                          items:
+                            type: string
+                  version:
+                    type: string
+                  protocol:
+                    type: integer
+                  hostname:
+                    type: string
+  /mojang/check:
+    get:
+      tags:
+        - mojang
+      summary: Get information on mojang services
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account.mojang.com:
+                    type: string
+                  api.mojang.com:
+                    type: string
+                  authserver.mojang.com:
+                    type: string
+                  textures.minecraft.net:
+                    type: string
+                  minecraft.net:
+                    type: string
+                  sessionserver.mojang.com:
+                    type: string
+                example:
+                  account.mojang.com: green
+                  textures.minecraft.net: green
+                  minecraft.net: green
+                  api.mojang.com: green
+                  authserver.mojang.com: green
+                  sessionserver.mojang.com: green
+  /images/sign:
+    get:
+      tags:
+        - images
+      summary: create an sign.png
+      parameters:
+        - name: wood
+          in: query
+          description: choose what type of wood the sign should be
+          required: false
+          style: form
+          schema:
+            type: string
+            default: oak
+        - name: line1
+          in: query
+          description: first line of the sign
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: line2
+          in: query
+          description: second line of the sign
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: line3
+          in: query
+          description: third line of the sign
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: line4
+          in: query
+          description: fourth line of the sign
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /images/advancement:
+    get:
+      tags:
+        - images
+      summary: create a minecraft acheivement
+      operationId: images_advancement_get
+      parameters:
+        - name: item
+          in: query
+          description: choose what item is shown
+          required: false
+          style: form
+          schema:
+            type: string
+            default: cake
+        - name: title
+          in: query
+          description: title of acheivement
+          required: false
+          style: form
+          schema:
+            type: string
+            default: "Achievement Got:"
+        - name: text
+          in: query
+          description: acheivement text
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /images/book:
+    get:
+      tags:
+        - images
+      summary: create a page from a minecraft book
+      parameters:
+        - name: text
+          in: query
+          description: text to fill the book
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /images/death:
+    get:
+      tags:
+        - images
+      summary: Create a custom death screen
+      parameters:
+        - name: message
+          in: query
+          description: death message
+          required: true
+          style: form
+          schema:
+            type: string
+        - name: xp
+          in: query
+          description: score to show
+          required: true
+          style: form
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /images/splashscreen:
+    get:
+      tags:
+        - images
+      summary: Create a custom minecraft splashscreen
+      parameters:
+        - name: text
+          in: query
+          description: text on splashscreen
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /images/motd:
+    get:
+      tags:
+        - images
+      summary: View motd
+      parameters:
+        - name: text
+          in: query
+          description: motd text
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /info/item:
+    get:
+      tags:
+        - info
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Info about an item
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trivia:
+                    type: array
+                    items:
+                      type: string
+  /info/block:
+    get:
+      tags:
+        - info
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+  /info/mob:
+    get:
+      tags:
+        - info
+      summary: info about a minecraft item
+      operationId: info_mob_get
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+  /info/acheivement:
+    get:
+      tags:
+        - info
+      summary: info about a minecraft item
+      operationId: info_acheivement_get
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+  /info/structure:
+    get:
+      tags:
+        - info
+      summary: info about a minecraft item
+      operationId: info_structure_get
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+  /info/biome:
+    get:
+      tags:
+        - info
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+  /info/command:
+    get:
+      tags:
+        - info
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+  /info/loottable:
+    get:
+      tags:
+        - info
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+  /render/item:
+    get:
+      tags:
+        - render
+      summary: View motd
+      parameters:
+        - name: text
+          in: query
+          description: motd text
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /render/mob:
+    get:
+      tags:
+        - render
+      summary: View motd
+      parameters:
+        - name: text
+          in: query
+          description: motd text
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /render/recipie:
+    get:
+      tags:
+        - render
+      summary: View motd
+      parameters:
+        - name: text
+          in: query
+          description: motd text
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /render/banner:
+    get:
+      tags:
+        - render
+      summary: View motd
+      parameters:
+        - name: text
+          in: query
+          description: motd text
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /render/firework:
+    get:
+      tags:
+        - render
+      summary: View motd
+      parameters:
+        - name: text
+          in: query
+          description: motd text
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /strack:
+    delete:
+      tags:
+        - servertracking
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+    get:
+      tags:
+        - servertracking
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      tags:
+        - servertracking
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
+    put:
+      tags:
+        - servertracking
+      summary: info about a minecraft item
+      parameters:
+        - name: name
+          in: query
+          description: name of item
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logo image in PNG format
+          content:
+            application/json:
+              schema:
+                type: string
 
