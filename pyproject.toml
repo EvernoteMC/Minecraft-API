@@ -15,6 +15,9 @@ pydantic = "^1.7.1"
 python = "^3.7"
 slowapi = "^0.1.2"
 uvicorn = "^0.12.2"
+Pillow = "^8.0.1"
+aiofiles = "^0.6.0"
+asyncpg = "^0.21.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

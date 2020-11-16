@@ -1,30 +1,7 @@
-import databases
-import sqlalchemy
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import FastAPI
 
-from .routers import items, users
+from .routers import images, info, mojang, render, server
 from .tags import tags_metadata
-
-# SQLAlchemy specific code, as with any other app
-DATABASE_URL = "postgresql://user:password@postgresserver/db"
-
-database = databases.Database(DATABASE_URL)
-
-metadata = sqlalchemy.MetaData()
-
-notes = sqlalchemy.Table(
-    "notes",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("text", sqlalchemy.String),
-    sqlalchemy.Column("completed", sqlalchemy.Boolean),
-)
-
-
-engine = sqlalchemy.create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
-metadata.create_all(engine)
 
 app = FastAPI(
     title="Obsidion-dev Minecraft API",
@@ -36,25 +13,32 @@ app = FastAPI(
 )
 
 
-async def get_token_header(x_token: str = Header(...)):
-    if x_token != "fake-super-secret-token":
-        raise HTTPException(status_code=400, detail="X-Token header invalid")
-
-
-app.include_router(users.router)
 app.include_router(
-    items.router,
-    prefix="/items",
-    tags=["items"],
-    dependencies=[Depends(get_token_header)],
-    responses={404: {"description": "Not found"}},
+    images.router,
+    prefix="/images",
+    tags=["images"],
 )
 
-@app.on_event("startup")
-async def startup():
-    await database.connect()
+app.include_router(
+    info.router,
+    prefix="/info",
+    tags=["info"],
+)
 
+app.include_router(
+    mojang.router,
+    prefix="/mojang",
+    tags=["mojang"],
+)
 
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
+app.include_router(
+    render.router,
+    prefix="/render",
+    tags=["render"],
+)
+
+app.include_router(
+    server.router,
+    prefix="/server",
+    tags=["server"],
+)
