@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi_caching import CacheManager, RedisBackend, ResponseCache, hashers
+from fastapi_caching import CacheManager, RedisBackend
 
 from app.routers import images, info, mojang, render, server
 from app.tags import tags_metadata
@@ -13,7 +13,6 @@ app = FastAPI(
     version="0.0.1",
     openapi_tags=tags_metadata,
     openapi_url="/api/v1/openapi.json",
-    redoc_url=None,
 )
 
 

@@ -1,22 +1,22 @@
 tags_metadata = [
     {
         "name": "images",
-        "description": "#TODO",
+        "description": "Image generation",
     },
     {
         "name": "info",
-        "description": "#TODO",
+        "description": "Info about minecraft stuff",
     },
     {
         "name": "mojang",
-        "description": "#TODO",
+        "description": "Information about mojang services",
     },
     {
         "name": "render",
-        "description": "#TODO",
+        "description": "render items/blocks",
     },
     {
         "name": "server",
-        "description": "#TODO",
+        "description": "Information about a minecraft server",
     },
 ]
