@@ -60,11 +60,8 @@ def advancement(item: str, title: str, text: str):
 
     # load font, image and create an area to draw on
     font = ImageFont.truetype("assets/Minecraftia-Regular.ttf", 14)
-    img = Image.open("assets/advancement.png")
-    print(img.format, img.size, img.mode)
+    img = Image.open("assets/advancement.png").convert("RGBA")
     draw = ImageDraw.Draw(img)
-    draw.text((0, 0), "Sample Text", (255, 255, 255), font=font)
-    img.save("text.png")
 
     # Title
     draw.text((60, 11), title, font=font, fill="#defa3c")
@@ -73,20 +70,20 @@ def advancement(item: str, title: str, text: str):
     draw.text((60, 36), text, font=font, fill=(0, 0, 0, 0))
 
     # # Item
-    # item = (
-    #     Image.open(f"items/{item}.png").resize((32, 32), Image.NEAREST).convert("RGBA")
-    # )
+    item = (
+        Image.open(f"items/{item}.png").resize((32, 32), Image.NEAREST).convert("RGBA")
+    )
 
-    # # make the black around it fully opaque
-    # pixdata = item.load()
-    # width, height = item.size
-    # for y in range(height):
-    #     for x in range(width):
-    #         if pixdata[x, y] == (0, 0, 0, 255):
-    #             pixdata[x, y] = (0, 0, 0, 0)
+    # make the black around it fully opaque
+    pixdata = item.load()
+    width, height = item.size
+    for y in range(height):
+        for x in range(width):
+            if pixdata[x, y] == (0, 0, 0, 255):
+                pixdata[x, y] = (0, 0, 0, 0)
 
-    # # paste item onto image keeping transparency
-    # img.paste(item, (20, 14), item)
+    # paste item onto image keeping transparency
+    img.paste(item, (20, 14), item)
 
     # save image in buffer so we can send
     img_io = BytesIO()
