@@ -57,7 +57,6 @@ def sign(line1: str, line2: str, line3: str, line4: str):
 
 @router.get("/advancement")
 def advancement(item: str, title: str, text: str):
-
     # load font, image and create an area to draw on
     font = ImageFont.truetype("assets/Minecraftia-Regular.ttf", 14)
     img = Image.open("assets/advancement.png").convert("RGBA")
