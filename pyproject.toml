@@ -20,6 +20,7 @@ asyncpg = "^0.21.0"
 asgi-ratelimit = {extras = ["full"], version = "^0.3.2"}
 aiohttp = "^3.7.2"
 fastapi-caching = {extras = ["redis"], version = "^0.3.0"}
+sentry-sdk = "^0.19.3"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

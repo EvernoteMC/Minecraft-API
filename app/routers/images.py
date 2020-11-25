@@ -52,7 +52,7 @@ def sign(line1: str, line2: str, line3: str, line4: str):
     img_io = BytesIO()
     img.save(img_io, "PNG", quality=70)
     img_io.seek(0)
-    return StreamingResponse(img.read(), media_type="image/png")
+    return StreamingResponse(img_io, media_type="image/png")
 
 
 @router.get("/advancement")
@@ -61,33 +61,35 @@ def advancement(item: str, title: str, text: str):
     # load font, image and create an area to draw on
     font = ImageFont.truetype("assets/Minecraftia-Regular.ttf", 14)
     img = Image.open("assets/advancement.png")
+    print(img.format, img.size, img.mode)
     draw = ImageDraw.Draw(img)
+    draw.text((0, 0), "Sample Text", (255, 255, 255), font=font)
+    img.save("text.png")
 
     # Title
-    draw.text((60, 11), title, (222, 250, 60), font=font)  # Yellow
-    # draw.text((60, 11),title,(255, 124, 256),font=font) # Magenta
+    draw.text((60, 11), title, font=font, fill="#defa3c")
 
     # Message
-    draw.text((60, 36), text, "white", font=font)
+    draw.text((60, 36), text, font=font, fill=(0, 0, 0, 0))
 
-    # Item
-    item = (
-        Image.open(f"items/{item}.png").convert("RGBA").resize((32, 32), Image.NEAREST)
-    )
+    # # Item
+    # item = (
+    #     Image.open(f"items/{item}.png").resize((32, 32), Image.NEAREST).convert("RGBA")
+    # )
 
-    # make the black around it fully opaque
-    pixdata = item.load()
-    width, height = item.size
-    for y in range(height):
-        for x in range(width):
-            if pixdata[x, y] == (0, 0, 0, 255):
-                pixdata[x, y] = (0, 0, 0, 0)
+    # # make the black around it fully opaque
+    # pixdata = item.load()
+    # width, height = item.size
+    # for y in range(height):
+    #     for x in range(width):
+    #         if pixdata[x, y] == (0, 0, 0, 255):
+    #             pixdata[x, y] = (0, 0, 0, 0)
 
-    # paste item onto image keeping transparency
-    img.paste(item, (20, 14), item)
+    # # paste item onto image keeping transparency
+    # img.paste(item, (20, 14), item)
 
     # save image in buffer so we can send
     img_io = BytesIO()
-    img.save(img_io, "PNG", quality=70)
+    img.save(img_io, "PNG", quality=100)
     img_io.seek(0)
-    return StreamingResponse(img.read(), media_type="image/png")
+    return StreamingResponse(img_io, media_type="image/png")
