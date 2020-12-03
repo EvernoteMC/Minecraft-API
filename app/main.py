@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Request, Response
-from fastapi_caching import CacheManager, RedisBackend
+from fastapi import FastAPI, Request
 import logging
 import sentry_sdk
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
