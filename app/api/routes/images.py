@@ -6,27 +6,29 @@ from starlette.responses import StreamingResponse
 router = APIRouter()
 
 
-@router.get("/book")
+@router.get("/book", summary="Generate a minecraft book page", status_code=501)
 def book():
     pass
 
 
-@router.get("/death")
+@router.get("/death", summary="Generate a minecraft death image", status_code=501)
 def death():
     pass
 
 
-@router.get("/splashscreen")
+@router.get(
+    "/splashscreen", summary="Generate a minecraft splashscreen", status_code=501
+)
 def splashscreen():
     pass
 
 
-@router.get("/motd")
+@router.get("/motd", summary="Generate a message of the day", status_code=501)
 def motd():
     pass
 
 
-@router.get("/sign")
+@router.get("/sign", summary="Generate an image of a sign")
 def sign(line1: str, line2: str, line3: str, line4: str):
     # load the font, image and create a draw area
     W = 242
@@ -55,7 +57,7 @@ def sign(line1: str, line2: str, line3: str, line4: str):
     return StreamingResponse(img_io, media_type="image/png")
 
 
-@router.get("/advancement")
+@router.get("/advancement", summary="Generate an image of an advancement")
 def advancement(item: str, title: str, text: str):
     # load font, image and create an area to draw on
     font = ImageFont.truetype("assets/Minecraftia-Regular.ttf", 14)

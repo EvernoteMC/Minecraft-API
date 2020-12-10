@@ -1,39 +1,75 @@
 from app.api.errors.http_error import http_error_handler
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
-from app.core.config import API_PREFIX
-from app.core.config import DEBUG
-from app.core.config import DOCS_URL
-from app.core.config import OPENAPI_URL
-from app.core.config import PROJECT_NAME
-from app.core.config import REDOC_URL
-from app.core.config import VERSION
-from app.core.tags import OPENAPI_TAGS
+from app.core import config
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException
+from fastapi.openapi.utils import get_openapi
+from functools import lru_cache
+from app.core.tags import OPENAPI_TAGS
 
 # from app.core.events import create_start_app_handler, create_stop_app_handler
 
 
+@lru_cache()
+def get_settings():
+    return config.Settings()
+
+
 def get_application() -> FastAPI:
     application = FastAPI(
-        title=PROJECT_NAME,
-        debug=DEBUG,
-        version=VERSION,
-        openapi_tags=OPENAPI_TAGS,
-        openapi_url=OPENAPI_URL,
-        docs_url=DOCS_URL,
-        redoc_url=REDOC_URL,
+        debug=config.settings.debug,
+        openapi_url=config.settings.openapi_url,
+        docs_url=config.settings.docs_url,
+        redoc_url=config.settings.redoc_url,
     )
+
+    application.include_router(api_router, prefix=config.settings.api_prefix)
+
+    def custom_openapi():
+        if application.openapi_schema:
+            return application.openapi_schema
+        openapi_schema = get_openapi(
+            title=config.settings.project_name,
+            version=config.settings.version,
+            routes=application.routes,
+            tags=OPENAPI_TAGS,
+            description=config.settings.description,
+            servers=[
+                {
+                    "url": "https://development.obsidion-dev.com",
+                    "description": "Development server",
+                },
+                {
+                    "url": "https://staging.obsidion-dev.com",
+                    "description": "Staging server",
+                },
+                {
+                    "url": "https://api.obsidion-dev.com",
+                    "description": "Production server",
+                },
+            ],
+        )
+        openapi_schema["info"]["contact"] = {
+            "name": "API Support",
+            "email": "leon@bowie-co.nz",
+            "url": "https://discord.gg/invite/7BRD7s6",
+        }
+        openapi_schema["info"]["license"] = {
+            "name": "GNU AGPL v3",
+            "url": "https://www.gnu.org/licenses/agpl-3.0.html",
+        }
+        application.openapi_schema = openapi_schema
+        return app.openapi_schema
+
+    application.openapi = custom_openapi
 
     # application.add_event_handler("startup", create_start_app_handler(application))
     # application.add_event_handler("shutdown", create_stop_app_handler(application))
 
     application.add_exception_handler(HTTPException, http_error_handler)
     application.add_exception_handler(RequestValidationError, http422_error_handler)
-
-    application.include_router(api_router, prefix=API_PREFIX)
 
     return application
 

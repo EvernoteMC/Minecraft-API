@@ -1,36 +1,31 @@
 import logging
 import sys
 
-from databases import DatabaseURL
 from loguru import logger
-from starlette.config import Config
-from starlette.datastructures import Secret
+from pydantic import BaseSettings
 
 from app.core.logging import InterceptHandler
 
-API_PREFIX = "/api/v1"
 
-JWT_TOKEN_PREFIX = "Token"  # noqa: S105
-VERSION = "1.0.0"
+class Settings(BaseSettings):
+    api_prefix: str = "/api/v1"
+    version: str = "1.0.0"
+    debug: bool = True
+    project_name: str = "Minecraft API"
+    openapi_url: str = "/api/v1/openapi.json"
+    docs_url: str = "/api/v1/docs"
+    redoc_url: str = "/api/v1/redocs"
+    description: str = "This is the API developed by the [Obsidion-dev](https://github.com/Obsidion-dev) team for use by the minecraft community"
 
-config = Config(".env")
+    class Config:
+        env_file = ".env"
 
-DEBUG: bool = config("DEBUG", cast=bool, default=False)
 
-DATABASE_URL: DatabaseURL = config("DB_CONNECTION", cast=DatabaseURL)
-MAX_CONNECTIONS_COUNT: int = config("MAX_CONNECTIONS_COUNT", cast=int, default=10)
-MIN_CONNECTIONS_COUNT: int = config("MIN_CONNECTIONS_COUNT", cast=int, default=10)
-
-SECRET_KEY: Secret = config("SECRET_KEY", cast=Secret)
-
-PROJECT_NAME: str = config("PROJECT_NAME", default="FastAPI example application")
-OPENAPI_URL: str = config("OPENAPI_URL", default="/api/v1/openapi.json")
-DOCS_URL: str = config("DOCS_URL", default="/api/v1/docs")
-REDOC_URL: str = config("REDOC_URL", default="/api/v1/redoc")
+settings = Settings()
 
 # logging configuration
 
-LOGGING_LEVEL = logging.DEBUG if DEBUG else logging.INFO
+LOGGING_LEVEL = logging.DEBUG if settings.debug else logging.INFO
 LOGGERS = ("uvicorn.asgi", "uvicorn.access")
 
 logging.getLogger().handlers = [InterceptHandler()]
