@@ -1,6 +1,9 @@
 from fastapi import APIRouter
 import aiohttp
 
+from app.models.mojang import MojangStatus
+
+
 router = APIRouter()
 
 mojang_sites = (
@@ -12,7 +15,7 @@ mojang_sites = (
 )
 
 
-@router.get("/check/")
+@router.get("/check/", response_model=MojangStatus)
 async def check():
     status = {}
     for site in mojang_sites:

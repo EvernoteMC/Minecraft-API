@@ -1,7 +1,7 @@
-tags_metadata = [
+OPENAPI_TAGS = [
     {
         "name": "images",
-        "description": "Image generation",
+        "description": "Generate minecraft themed images",
     },
     {
         "name": "info",
@@ -9,14 +9,14 @@ tags_metadata = [
     },
     {
         "name": "mojang",
-        "description": "Information about mojang services",
+        "description": "Mojang services info and query",
     },
     {
         "name": "render",
-        "description": "render items/blocks",
+        "description": "Render minecraft images",
     },
     {
         "name": "server",
-        "description": "Information about a minecraft server",
+        "description": "Information about minecraft servers",
     },
 ]

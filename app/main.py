@@ -1,105 +1,41 @@
-from fastapi import FastAPI, Request
-import logging
-import sentry_sdk
-from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-import uvicorn
-from fastapi.responses import JSONResponse
-import pydantic
+from app.api.errors.http_error import http_error_handler
+from app.api.errors.validation_error import http422_error_handler
+from app.api.routes.api import router as api_router
+from app.core.config import API_PREFIX
+from app.core.config import DEBUG
+from app.core.config import DOCS_URL
+from app.core.config import OPENAPI_URL
+from app.core.config import PROJECT_NAME
+from app.core.config import REDOC_URL
+from app.core.config import VERSION
+from app.core.tags import OPENAPI_TAGS
+from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException
 
-from app.routers import images, info, mojang, render, server
-from app.tags import tags_metadata
-from app.settings import get_settings
-
-"""
-Init stuff.
-"""
-
-LOGGER = logging.getLogger("api")
-
-SETTINGS = get_settings()
-
-if SETTINGS.sentry_dsn:  # pragma: no cover
-    sentry_sdk.init(dsn=SETTINGS.sentry_dsn)
-
-app = FastAPI(
-    title="Obsidion-dev Minecraft API",
-    description="A Minecraft API brought to you by the folks at Obsidion-dev",
-    version="0.0.1",
-    openapi_tags=tags_metadata,
-    openapi_url="/api/v1/openapi.json",
-)
-
-"""
-Middleware.
-"""
-
-# Sentry Error Tracking
-if SETTINGS.sentry_dsn:  # pragma: no cover
-    LOGGER.info("Adding Sentry middleware")
-    app.add_middleware(SentryAsgiMiddleware)
+# from app.core.events import create_start_app_handler, create_stop_app_handler
 
 
-"""
-Routes.
-"""
-
-app.include_router(
-    images.router,
-    prefix="/images",
-    tags=["images"],
-)
-app.include_router(
-    info.router,
-    prefix="/info",
-    tags=["info"],
-)
-app.include_router(
-    mojang.router,
-    prefix="/mojang",
-    tags=["mojang"],
-)
-app.include_router(
-    render.router,
-    prefix="/render",
-    tags=["render"],
-)
-app.include_router(
-    server.router,
-    prefix="/server",
-    tags=["server"],
-)
-
-"""
-Cache.
-"""
-
-# cache_backend = RedisBackend(
-#     host=SETTINGS.redis_host,
-#     port=SETTINGS.redis_port,
-#     prefix="api",
-#     app_version="0.0.1",
-# )
-# cache_manager = CacheManager(cache_backend)
-
-"""
-Exception Handler.
-"""
-
-
-@app.exception_handler(pydantic.error_wrappers.ValidationError)
-async def handle_validation_error(
-    request: Request, exc: pydantic.error_wrappers.ValidationError
-):  # pylint: disable=unused-argument
-    """
-    Handles validation errors.
-    """
-    return JSONResponse({"message": exc.errors()}, status_code=422)
-
-
-if __name__ == "__main__":
-    uvicorn.run(
-        "app.main:APP",
-        host="127.0.0.1",
-        port=SETTINGS.port,
-        log_level="info",
+def get_application() -> FastAPI:
+    application = FastAPI(
+        title=PROJECT_NAME,
+        debug=DEBUG,
+        version=VERSION,
+        openapi_tags=OPENAPI_TAGS,
+        openapi_url=OPENAPI_URL,
+        docs_url=DOCS_URL,
+        redoc_url=REDOC_URL,
     )
+
+    # application.add_event_handler("startup", create_start_app_handler(application))
+    # application.add_event_handler("shutdown", create_stop_app_handler(application))
+
+    application.add_exception_handler(HTTPException, http_error_handler)
+    application.add_exception_handler(RequestValidationError, http422_error_handler)
+
+    application.include_router(api_router, prefix=API_PREFIX)
+
+    return application
+
+
+app = get_application()
