@@ -48,8 +48,13 @@ async def effect(version: str, name: str, pe: Optional[bool] = False):
 
 
 @router.get("/mob", response_model=Mob, summary="View info on a mob", status_code=501)
-async def mob():
-    pass
+async def mob(version: str, name: str, pe: Optional[bool] = False):
+    if pe:
+        mcd = minecraft_data(version, "pe")
+    else:
+        mcd = minecraft_data(version)
+
+    return mcd.entities_name[name]
 
 
 @router.get(
@@ -58,7 +63,9 @@ async def mob():
     summary="View info on an achivement",
     status_code=501,
 )
-async def achievement():
+async def achievement(
+    version: str, name_id: Union[str, int], pe: Optional[bool] = False
+):
     pass
 
 
@@ -68,7 +75,7 @@ async def achievement():
     summary="View info on a structure",
     status_code=501,
 )
-async def structure():
+async def structure(version: str, name_id: Union[str, int], pe: Optional[bool] = False):
     pass
 
 
@@ -87,8 +94,13 @@ async def biome(version: str, name: str, pe: Optional[bool] = False):
     summary="View info on a command",
     status_code=501,
 )
-async def command():
-    pass
+async def command(version: str, name_id: Union[str, int], pe: Optional[bool] = False):
+    if pe:
+        mcd = minecraft_data(version, "pe")
+    else:
+        mcd = minecraft_data(version)
+
+    return mcd.find_item_or_block(name_id)
 
 
 @router.get(
@@ -97,5 +109,40 @@ async def command():
     summary="View info on a loottable",
     status_code=501,
 )
-def loottable():
-    pass
+def loottable(version: str, name_id: Union[str, int], pe: Optional[bool] = False):
+    if pe:
+        mcd = minecraft_data(version, "pe")
+    else:
+        mcd = minecraft_data(version)
+
+    return mcd.find_item_or_block(name_id)
+
+
+@router.get(
+    "/recipies",
+    response_model=Loottable,
+    summary="View info on a loottable",
+    status_code=501,
+)
+def recipies(version: str, id: int, pe: Optional[bool] = False):
+    if pe:
+        mcd = minecraft_data(version, "pe")
+    else:
+        mcd = minecraft_data(version)
+
+    return mcd.recipes(id)
+
+
+@router.get(
+    "/materials",
+    response_model=Loottable,
+    summary="View info on a loottable",
+    status_code=501,
+)
+def materials(version: str, id: int, pe: Optional[bool] = False):
+    if pe:
+        mcd = minecraft_data(version, "pe")
+    else:
+        mcd = minecraft_data(version)
+
+    return mcd.materials(id)
