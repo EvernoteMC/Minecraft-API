@@ -1,16 +1,14 @@
-FROM python:3.6-alpine
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Install Poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
+    cd /usr/local/bin && \
+    ln -s /opt/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
 
-COPY requirements.txt /usr/src/app/
+# Copy using poetry.lock* in case it doesn't exist yet
+COPY pyproject.toml poetry.lock ./
 
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN poetry install --no-root --no-dev
 
-COPY . /usr/src/app
-
-EXPOSE 8080
-
-ENTRYPOINT ["python3"]
-
-CMD ["-m", "swagger_server"]
+COPY ./app /app/app
