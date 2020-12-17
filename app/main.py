@@ -8,6 +8,9 @@ from starlette.exceptions import HTTPException
 from fastapi.openapi.utils import get_openapi
 from functools import lru_cache
 from app.core.tags import OPENAPI_TAGS
+from ratelimit import RateLimitMiddleware
+from ratelimit.backends.redis import RedisBackend
+from app.core.rate_limit import rate_auth, rate_limit_config
 
 # from app.core.events import create_start_app_handler, create_stop_app_handler
 
@@ -61,6 +64,7 @@ def get_application() -> FastAPI:
             "name": "GNU AGPL v3",
             "url": "https://www.gnu.org/licenses/agpl-3.0.html",
         }
+        openapi_schema["info"]["termsOfService"] = "https://api.obsidion-dev.com/terms"
         application.openapi_schema = openapi_schema
         return app.openapi_schema
 
@@ -71,6 +75,13 @@ def get_application() -> FastAPI:
 
     application.add_exception_handler(HTTPException, http_error_handler)
     application.add_exception_handler(RequestValidationError, http422_error_handler)
+
+    application.add_middleware(
+        RateLimitMiddleware,
+        authenticate=rate_auth,
+        backend=RedisBackend(host=config.settings.cache_host),
+        config=rate_limit_config,
+    )
 
     return application
 
