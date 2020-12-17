@@ -12,6 +12,8 @@ from app.models.info import (
     Commands,
     Loottable,
     Achievement,
+    Recipies,
+    Materials,
 )
 
 router = APIRouter()
@@ -61,7 +63,6 @@ async def mob(version: str, name: str, pe: Optional[bool] = False):
     "/achievement",
     response_model=Achievement,
     summary="View info on an achivement",
-    status_code=501,
 )
 async def achievement(
     version: str, name_id: Union[str, int], pe: Optional[bool] = False
@@ -73,7 +74,6 @@ async def achievement(
     "/structure",
     response_model=Structure,
     summary="View info on a structure",
-    status_code=501,
 )
 async def structure(version: str, name_id: Union[str, int], pe: Optional[bool] = False):
     pass
@@ -92,7 +92,6 @@ async def biome(version: str, name: str, pe: Optional[bool] = False):
     "/command",
     response_model=Commands,
     summary="View info on a command",
-    status_code=501,
 )
 async def command(version: str, name_id: Union[str, int], pe: Optional[bool] = False):
     if pe:
@@ -107,7 +106,6 @@ async def command(version: str, name_id: Union[str, int], pe: Optional[bool] = F
     "/loottable",
     response_model=Loottable,
     summary="View info on a loottable",
-    status_code=501,
 )
 def loottable(version: str, name_id: Union[str, int], pe: Optional[bool] = False):
     if pe:
@@ -120,29 +118,26 @@ def loottable(version: str, name_id: Union[str, int], pe: Optional[bool] = False
 
 @router.get(
     "/recipies",
-    response_model=Loottable,
+    response_model=Recipies,
     summary="View info on a loottable",
-    status_code=501,
 )
-def recipies(version: str, id: int, pe: Optional[bool] = False):
+def recipies(version: str, id: str, pe: Optional[bool] = False):
     if pe:
         mcd = minecraft_data(version, "pe")
     else:
         mcd = minecraft_data(version)
-
-    return mcd.recipes(id)
+    return mcd.recipes[id]
 
 
 @router.get(
     "/materials",
-    response_model=Loottable,
+    response_model=Materials,
     summary="View info on a loottable",
-    status_code=501,
 )
-def materials(version: str, id: int, pe: Optional[bool] = False):
+def materials(version: str, id: str, pe: Optional[bool] = False):
     if pe:
         mcd = minecraft_data(version, "pe")
     else:
         mcd = minecraft_data(version)
 
-    return mcd.materials(id)
+    return mcd.materials[id]

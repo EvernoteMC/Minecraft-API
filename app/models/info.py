@@ -49,3 +49,11 @@ class Loottable(BaseModel):
 
 class Achievement(BaseModel):
     pass
+
+
+class Materials(BaseModel):
+    pass
+
+
+class Recipies(BaseModel):
+    pass
