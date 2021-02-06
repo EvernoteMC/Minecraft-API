@@ -2,7 +2,7 @@ import logging
 import sys
 
 from loguru import logger
-from pydantic import BaseSettings
+from pydantic import BaseSettings, RedisDsn
 
 from app.core.logging import InterceptHandler
 
@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     docs_url: str = "/api/v1/docs"
     redoc_url: str = "/api/v1/redocs"
     description: str = "This is the API developed by the [Obsidion-dev](https://github.com/Obsidion-dev) team for use by the minecraft community"
-    cache_host: str = "cache"
+    redis: RedisDsn = "redis://cache/1"
 
     class Config:
         env_file = ".env"

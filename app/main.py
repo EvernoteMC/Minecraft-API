@@ -10,7 +10,8 @@ from functools import lru_cache
 from app.core.tags import OPENAPI_TAGS
 from ratelimit import RateLimitMiddleware
 from ratelimit.backends.redis import RedisBackend
-from app.core.rate_limit import rate_auth, rate_limit_config
+
+# from app.core.rate_limit import rate_auth, rate_limit_config
 
 # from app.core.events import create_start_app_handler, create_stop_app_handler
 
@@ -76,12 +77,12 @@ def get_application() -> FastAPI:
     application.add_exception_handler(HTTPException, http_error_handler)
     application.add_exception_handler(RequestValidationError, http422_error_handler)
 
-    application.add_middleware(
-        RateLimitMiddleware,
-        authenticate=rate_auth,
-        backend=RedisBackend(host=config.settings.cache_host),
-        config=rate_limit_config,
-    )
+    # application.add_middleware(
+    #     RateLimitMiddleware,
+    #     authenticate=rate_auth,
+    #     backend=RedisBackend(config.settings.cache_host),
+    #     config=rate_limit_config,
+    # )
 
     return application
 
