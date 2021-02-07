@@ -35,6 +35,17 @@ async def javaicon(server: str, port: Optional[int] = None):
     return StreamingResponse(image_bytesio, media_type="image/png")
 
 
+@router.get("/motd", summary="View the motd of a server")
+async def javaicon(server: str, port: Optional[int] = None):
+    if port:
+        data = await status(server, port)
+    else:
+        data = await status(server)
+    # encoded = base64.decodebytes(data.icon[22:].encode("utf-8"))
+    # image_bytesio = io.BytesIO(encoded)
+    # return StreamingResponse(image_bytesio, media_type="image/png")
+
+
 @router.get("/bedrock", summary="View the status of a bedrock server", status_code=501)
 async def bedrock(server: str, port: Optional[int] = None):
     pass
