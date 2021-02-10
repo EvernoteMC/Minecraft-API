@@ -41,6 +41,7 @@ def get_application() -> FastAPI:
             tags=OPENAPI_TAGS,
             description=config.settings.description,
             servers=[
+                # remove for production
                 {"url": "http://localhost", "description": "Local"},
                 {
                     "url": "https://development.obsidion-dev.com",
