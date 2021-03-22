@@ -2,14 +2,14 @@
 authors = ["Leon Bowie <leon@bowie-co.nz>"]
 description = ""
 license = "AGPLv3"
-name = "app"
+name = "Minecraft API"
 version = "1.0.0"
 
 [tool.poetry.dependencies]
 Pillow = "^8.0.1"
 SQLAlchemy = "^1.3.20"
 aiohttp = "^3.7.2"
-aiomcstats = {git = "https://github.com/Obsidion-dev/aiomcstats.git", branch = "master"}
+aiomcstats = {git = "https://github.com/Obsidion-dev/aiomcstats.git", branch = "main"}
 alembic = "^1.4.3"
 asgi-ratelimit = {extras = ["full"], version = "^0.4.0"}
 asyncpg = "^0.21.0"
