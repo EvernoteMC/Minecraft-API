@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -29,7 +30,7 @@ def motd():
 
 
 @router.get("/sign", summary="Generate an image of a sign")
-def sign(line1: str, line2: str, line3: str, line4: str):
+def sign(line1: str, line2: Optional[str] = None, line3: Optional[str] = None, line4: Optional[str] = None):
     # load the font, image and create a draw area
     W = 242
     font = ImageFont.truetype("assets/Minecraftia-Regular.ttf", 20)
@@ -58,21 +59,21 @@ def sign(line1: str, line2: str, line3: str, line4: str):
 
 
 @router.get("/advancement", summary="Generate an image of an advancement")
-def advancement(item: str, title: str, text: str):
+def advancement(item: str, title: str, text: str, title_color: Optional[str] = "#defa3c", text_color: Optional[str] = "#ffffff"):
     # load font, image and create an area to draw on
-    font = ImageFont.truetype("assets/Minecraftia-Regular.ttf", 14)
+    font = ImageFont.truetype("assets/minecraft-font.ttf", 16)
     img = Image.open("assets/advancement.png").convert("RGBA")
     draw = ImageDraw.Draw(img)
 
     # Title
-    draw.text((60, 11), title, font=font, fill="#defa3c")
+    draw.text((60, 8), title, font=font, fill=title_color)
 
     # Message
-    draw.text((60, 36), text, font=font, fill=(0, 0, 0, 0))
+    draw.text((60, 30), text, font=font, fill=text_color)
 
     # # Item
     item = (
-        Image.open(f"items/{item}.png").resize((32, 32), Image.NEAREST).convert("RGBA")
+        Image.open(f"assets/item/{item}.png").resize((32, 32), Image.NEAREST).convert("RGBA")
     )
 
     # make the black around it fully opaque
@@ -91,3 +92,4 @@ def advancement(item: str, title: str, text: str):
     img.save(img_io, "PNG", quality=100)
     img_io.seek(0)
     return StreamingResponse(img_io, media_type="image/png")
+

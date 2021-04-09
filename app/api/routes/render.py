@@ -15,11 +15,6 @@ async def banner():
     pass
 
 
-@router.get("/image", summary="Convert an image to a minecraft one", status_code=501)
-async def image():
-    pass
-
-
 @router.get("/item", summary="Render minecraft item", status_code=501)
 async def item():
     pass

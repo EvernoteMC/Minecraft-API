@@ -60,7 +60,7 @@ async def mob(version: str, name: str, pe: Optional[bool] = False):
 
 
 @router.get(
-    "/achievement",
+    "/advancement",
     response_model=Achievement,
     summary="View info on an achivement",
 )
