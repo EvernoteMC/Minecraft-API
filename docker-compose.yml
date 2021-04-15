@@ -7,7 +7,7 @@ services:
       - 80:80
     env_file:
       - .env
-    volumes:
-      - .:/app
+    # volumes:
+    #   - .:/app
   cache:
     image: redis:6-alpine

@@ -1,10 +1,8 @@
 import logging
 import sys
 
-from loguru import logger
 from pydantic import BaseSettings, RedisDsn
 
-from app.core.logging import InterceptHandler
 
 
 class Settings(BaseSettings):
@@ -23,15 +21,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-# logging configuration
-
-LOGGING_LEVEL = logging.DEBUG if settings.debug else logging.INFO
-LOGGERS = ("uvicorn.asgi", "uvicorn.access")
-
-logging.getLogger().handlers = [InterceptHandler()]
-for logger_name in LOGGERS:
-    logging_logger = logging.getLogger(logger_name)
-    logging_logger.handlers = [InterceptHandler(level=LOGGING_LEVEL)]
-
-logger.configure(handlers=[{"sink": sys.stderr, "level": LOGGING_LEVEL}])

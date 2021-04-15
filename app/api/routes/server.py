@@ -39,7 +39,7 @@ async def javaicon(server: str, port: Optional[int] = None):
     return StreamingResponse(image_bytesio, media_type="image/png")
 
 
-@router.get("/motd", summary="View the motd of a server", status_code=501)
+# @router.get("/motd", summary="View the motd of a server", status_code=501)
 async def javamotd(server: str, port: Optional[int] = None):
     pass
     # if port:

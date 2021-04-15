@@ -7,24 +7,24 @@ from starlette.responses import StreamingResponse
 router = APIRouter()
 
 
-@router.get("/book", summary="Generate a minecraft book page", status_code=501)
+# @router.get("/book", summary="Generate a minecraft book page", status_code=501)
 def book():
     pass
 
 
-@router.get("/death", summary="Generate a minecraft death image", status_code=501)
+# @router.get("/death", summary="Generate a minecraft death image", status_code=501)
 def death():
     pass
 
 
-@router.get(
-    "/splashscreen", summary="Generate a minecraft splashscreen", status_code=501
-)
+# @router.get(
+    # "/splashscreen", summary="Generate a minecraft splashscreen", status_code=501
+# )
 def splashscreen():
     pass
 
 
-@router.get("/motd", summary="Generate a message of the day", status_code=501)
+# @router.get("/motd", summary="Generate a message of the day", status_code=501)
 def motd():
     pass
 
