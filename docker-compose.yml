@@ -7,7 +7,7 @@ services:
       - 80:80
     env_file:
       - .env
-    # volumes:
-    #   - .:/app
+    restart: on-failure
   cache:
     image: redis:6-alpine
+    restart: on-failure

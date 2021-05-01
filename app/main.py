@@ -41,8 +41,10 @@ def get_application() -> FastAPI:
             tags=OPENAPI_TAGS,
             description=config.settings.description,
             servers=[
-                # remove for production
-                {"url": "http://localhost", "description": "Local"},
+                {
+                    "url": "https://api.obsidion-dev.com",
+                    "description": "Production server",
+                },
                 {
                     "url": "https://development.obsidion-dev.com",
                     "description": "Development server",
@@ -51,16 +53,12 @@ def get_application() -> FastAPI:
                     "url": "https://staging.obsidion-dev.com",
                     "description": "Staging server",
                 },
-                {
-                    "url": "https://api.obsidion-dev.com",
-                    "description": "Production server",
-                },
             ],
         )
         openapi_schema["info"]["contact"] = {
             "name": "API Support",
             "email": "leon@bowie-co.nz",
-            "url": "https://discord.gg/invite/7BRD7s6",
+            "url": "https://discord.gg/invite/fWxtKFVmaW",
         }
         openapi_schema["info"]["license"] = {
             "name": "GNU AGPL v3",
