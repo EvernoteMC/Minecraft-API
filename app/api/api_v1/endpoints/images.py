@@ -33,7 +33,7 @@ def motd():
 def sign(line1: str, line2: Optional[str] = None, line3: Optional[str] = None, line4: Optional[str] = None):
     # load the font, image and create a draw area
     W = 242
-    font = ImageFont.truetype("assets/Minecraftia-Regular.ttf", 20)
+    font = ImageFont.truetype("assets/minecraft-font.ttf", 20)
     img = Image.open("assets/sign.png")
     draw = ImageDraw.Draw(img)
 
