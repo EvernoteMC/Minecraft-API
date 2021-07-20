@@ -16,7 +16,9 @@ mojang_sites = (
 
 
 @router.get(
-    "/check", summary="View the status of mojang services", response_model=schemas.MojangStatus
+    "/check",
+    summary="View the status of mojang services",
+    response_model=schemas.MojangStatus,
 )
 async def check():
     status = {}

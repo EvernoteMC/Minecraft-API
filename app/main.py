@@ -28,6 +28,7 @@ if settings.BACKEND_CORS_ORIGINS:
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
+
 def custom_openapi() -> Dict[str, Any]:
     if app.openapi_schema:
         return app.openapi_schema

@@ -2,6 +2,8 @@ from typing import Optional
 from fastapi import APIRouter
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
+import os
+from fastapi import HTTPException
 from starlette.responses import StreamingResponse
 
 router = APIRouter()
@@ -18,7 +20,7 @@ def death():
 
 
 # @router.get(
-    # "/splashscreen", summary="Generate a minecraft splashscreen", status_code=501
+# "/splashscreen", summary="Generate a minecraft splashscreen", status_code=501
 # )
 def splashscreen():
     pass
@@ -30,7 +32,12 @@ def motd():
 
 
 @router.get("/sign", summary="Generate an image of a sign")
-def sign(line1: str, line2: Optional[str] = None, line3: Optional[str] = None, line4: Optional[str] = None):
+def sign(
+    line1: str,
+    line2: Optional[str] = None,
+    line3: Optional[str] = None,
+    line4: Optional[str] = None,
+):
     # load the font, image and create a draw area
     W = 242
     font = ImageFont.truetype("assets/minecraft-font.ttf", 20)
@@ -59,8 +66,17 @@ def sign(line1: str, line2: Optional[str] = None, line3: Optional[str] = None, l
 
 
 @router.get("/advancement", summary="Generate an image of an advancement")
-def advancement(item: str, title: str, text: str, title_color: Optional[str] = "#defa3c", text_color: Optional[str] = "#ffffff"):
-    # load font, image and create an area to draw on
+def advancement(
+    item: str,
+    title: str,
+    text: str,
+    title_color: Optional[str] = "#defa3c",
+    text_color: Optional[str] = "#ffffff",
+):
+    if not os.path.exists(f"assets/item/{item}.png"):
+        raise HTTPException(
+            status_code=404, detail="This item does not exist",
+        )
     font = ImageFont.truetype("assets/minecraft-font.ttf", 16)
     img = Image.open("assets/advancement.png").convert("RGBA")
     draw = ImageDraw.Draw(img)
@@ -73,7 +89,9 @@ def advancement(item: str, title: str, text: str, title_color: Optional[str] = "
 
     # # Item
     item = (
-        Image.open(f"assets/item/{item}.png").resize((32, 32), Image.NEAREST).convert("RGBA")
+        Image.open(f"assets/item/{item}.png")
+        .resize((32, 32), Image.NEAREST)
+        .convert("RGBA")
     )
 
     # make the black around it fully opaque
@@ -92,4 +110,3 @@ def advancement(item: str, title: str, text: str, title_color: Optional[str] = "
     img.save(img_io, "PNG", quality=100)
     img_io.seek(0)
     return StreamingResponse(img_io, media_type="image/png")
-

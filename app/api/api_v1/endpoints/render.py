@@ -4,7 +4,7 @@ router = APIRouter()
 
 
 # @router.get(
-    # "/recipie", summary="Render a png/gif of a minecraft recipe", status_code=501
+# "/recipie", summary="Render a png/gif of a minecraft recipe", status_code=501
 # )
 async def recipie():
     pass
