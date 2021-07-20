@@ -51,8 +51,12 @@ async def javamotd(server: str, port: Optional[int] = None):
     # return StreamingResponse(image_bytesio, media_type="image/png")
 
 
-@router.get("/bedrock", summary="View the status of a bedrock server",response_model=BedrockStatus,
-    responses={404: {"model": BedrockOffline}},)
+@router.get(
+    "/bedrock",
+    summary="View the status of a bedrock server",
+    response_model=BedrockStatus,
+    responses={404: {"model": BedrockOffline}},
+)
 async def bedrock(server: str, port: Optional[int] = None):
     if port:
         data = await aiomcstats.bedrock(server, port)
