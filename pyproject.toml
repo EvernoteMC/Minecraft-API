@@ -12,7 +12,7 @@ minecraft-data = "^2.70.1"
 tqdm = "^4.54.1"
 python = "^3.8"
 uvicorn = "^0.11.3"
-fastapi = "^0.54.1"
+fastapi = "^0.65.2"
 python-multipart = "^0.0.5"
 passlib = {extras = ["bcrypt"], version = "^1.7.2"}
 tenacity = "^6.1.0"
