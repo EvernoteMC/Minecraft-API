@@ -47,16 +47,16 @@ def sign(
     # add all the lines of text
     if line1:
         w, h = draw.textsize(line1, font=font)
-        draw.text(((W - w) / 2, 0), line1, font=font)
+        draw.text(((W - w) / 2, 0), line1, font=font, fill=(0, 0, 0))
     if line2:
         w, h = draw.textsize(line2, font=font)
-        draw.text(((W - w) / 2, 30), line2, font=font)
+        draw.text(((W - w) / 2, 30), line2, font=font, fill=(0, 0, 0))
     if line3:
         w, h = draw.textsize(line3, font=font)
-        draw.text(((W - w) / 2, 60), line3, font=font)
+        draw.text(((W - w) / 2, 60), line3, font=font, fill=(0, 0, 0))
     if line4:
         w, h = draw.textsize(line4, font=font)
-        draw.text(((W - w) / 2, 90), line4, font=font)
+        draw.text(((W - w) / 2, 90), line4, font=font, fill=(0, 0, 0))
 
     # save the image in a buffer so we can send it
     img_io = BytesIO()
